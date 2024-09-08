@@ -1,6 +1,6 @@
 <section class="todoapp">
     <header class="header">
-    <h1>todos</h1>
+    <h1 class="text-3xl">todos</h1>
     <input class="new-todo" placeholder="What needs to be done?" autofocus=""/>
     </header>
 
@@ -13,7 +13,14 @@
                 <div class="view">
                     <input class="toggle" type="checkbox" />
                     <label>Learn how to build a Todo list in Phoenix</label>
-                    <button class="destroy" ></button>
+                    <button class="destroy"></button>
+                </div>
+            </li>
+            <li data-id="1503213214" class="completed">
+                <div class="view">
+                    <input class="toggle" type="checkbox" />
+                    <label>Completed Item</label>
+                    <button class="destroy"></button>
                 </div>
             </li>
         </ul>
@@ -26,5 +33,8 @@
             <li><a href="#/active">Active</a></li>
             <li><a href="#/completed">Completed</a></li>
         </ul>
+        <button class="clear-completed" style="display: block;">
+            Clear Completed
+        </button>
     </footer>
 </section>
