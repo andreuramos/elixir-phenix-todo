@@ -8,4 +8,9 @@ defmodule TodoWeb.PageLiveTest do
         assert disconnected_html =~ "todo"
         assert render(page_live) =~ "What needs to be done"
     end
+
+    test "connect and create a todo item", %{conn: conn} do
+        {:ok, view, _html} = live(conn, "/")
+        assert render_submit(view, :create, %{"text" => "Learn Elixir"}) =~ "Learn Elixir"
+    end
 end

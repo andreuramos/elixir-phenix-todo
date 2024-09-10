@@ -1,7 +1,17 @@
 <section class="todoapp">
     <header class="header">
     <h1 class="text-3xl">todos</h1>
-    <input class="new-todo" placeholder="What needs to be done?" autofocus=""/>
+    <form phx-submit="create" id="form">
+        <input
+            id="new_todo"
+            class="new-todo"
+            type="text"
+            name="text"
+            placeholder="What needs to be done?"
+            autofocus=""
+            required="required"
+        />
+    </form>    
     </header>
 
     <section class="main" style="display:block;">
