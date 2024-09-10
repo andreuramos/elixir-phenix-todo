@@ -1,4 +1,4 @@
-defmodule Todo.Items do
+defmodule Todo.Item do
   use Ecto.Schema
   alias Todo.Repo
   alias __MODULE__
@@ -17,5 +17,25 @@ defmodule Todo.Items do
     items
     |> cast(attrs, [:text, :person_id, :status])
     |> validate_required([:text])
+  end
+
+  def create_item(attrs \\ %{}) do
+    %Item{}
+    |> changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def get_item!(id) do
+    Repo.get!(Item, id)
+  end
+
+  def list_items do
+    Repo.all(Item)
+  end
+
+  def update_item(%Item{} = item, attrs) do
+    item
+    |> Item.changeset(attrs)
+    |> Repo.update()
   end
 end
