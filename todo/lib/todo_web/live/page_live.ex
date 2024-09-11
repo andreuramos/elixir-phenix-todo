@@ -21,6 +21,18 @@ defmodule TodoWeb.PageLive do
     end
 
     @impl true
+    def handle_event("toggle", data, socket) do
+        status = if Map.has_key?(data, "value"), do: 1, else: 0
+        item = Item.get_item!(Map.get(data, "id"))
+        Item.update_item(item, %{id: item.id, status: status})
+
+        socket = assign(socket, items: Item.list_items(), active: %Item{})
+        TodoWeb.Endpoint.broadcast(@topic, "update", socket.assigns)
+
+        {:noreply, socket}
+    end
+
+    @impl true
     def handle_info(%{event: "update", payload: %{items: items}}, socket) do
         {:noreply, assign(socket, items: items)}
     end
