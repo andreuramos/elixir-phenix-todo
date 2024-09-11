@@ -19,20 +19,20 @@
         <label for="toggle-all">Mark all as complete</label>
         
         <ul class="todo-list">
-            <li data-id="1503213213" class="">
-                <div class="view">
-                    <input class="toggle" type="checkbox" />
-                    <label>Learn how to build a Todo list in Phoenix</label>
-                    <button class="destroy"></button>
-                </div>
-            </li>
-            <li data-id="1503213214" class="completed">
-                <div class="view">
-                    <input class="toggle" type="checkbox" />
-                    <label>Completed Item</label>
-                    <button class="destroy"></button>
-                </div>
-            </li>
+            <%= for item <- @items do %>
+                <li data-id={item.id} class={completed?(item)}>
+                    <div class="view">
+                        <%= if checked?(item) do %>
+                        <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
+                        <% else %>
+                        <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
+                        <% end %>
+                        <label><%= item.text %></label>
+                        <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
+                    </div>
+                </li>
+                <% end %>
+
         </ul>
     </section>
 

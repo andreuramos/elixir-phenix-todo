@@ -6,7 +6,9 @@ defmodule TodoWeb.PageLive do
 
     @impl true
     def mount(_params, _session, socket) do
-        {:ok, socket}
+
+        if connected?(socket), do: TodoWeb.Endpoint.subscribe(@topic)
+        {:ok, assign(socket, items: Item.list_items())}
     end
 
     @impl true
@@ -21,5 +23,13 @@ defmodule TodoWeb.PageLive do
     @impl true
     def handle_info(%{event: "update", payload: %{items: items}}, socket) do
         {:noreply, assign(socket, items: items)}
+    end
+
+    def checked?(%Item{} = item) do
+        not is_nil(item.status) and item.status > 0
+    end
+
+    def completed?(%Item{} = item) do
+        if not is_nil(item.status) and item.status > 0, do: "completed", else: ""
     end
 end
