@@ -32,6 +32,16 @@ defmodule TodoWeb.PageLive do
         {:noreply, socket}
     end
 
+    @imple true
+    def handle_event("delete", data, socket) do
+        Item.delete_item(Map.get(data, "id"))
+
+        socket = assign(socket, items: Item.list_items(), active: %Item{})
+        TodoWeb.Endpoint.broadcast(@topic, "update", socket.assigns)
+
+        {:noreply, socket}
+    end
+
     @impl true
     def handle_info(%{event: "update", payload: %{items: items}}, socket) do
         {:noreply, assign(socket, items: items)}
