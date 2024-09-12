@@ -57,4 +57,27 @@ defmodule TodoWeb.PageLiveTest do
         updated_item = Item.get_item!(item.id)
         assert updated_item.text == "updated text"
     end
+
+    test "Filter item", %{conn: conn} do
+        {:ok, item1} = Item.create_item(%{"text" => "Learn Elixir"})
+        {:ok, _item2} = Item.create_item(%{"text" => "Learn Phoenix"})
+
+        {:ok, view, _html} = live(conn, "/")
+        assert render_click(view, :toggle, %{"id" => item1.id, "value" => 1}) =~ "completed"
+
+        # list only completed items
+        {:ok, view, _html} = live(conn, "/?filter_by=completed")
+        assert render(view) =~ "Learn Elixir"
+        refute render(view) =~ "Learn Phoenix"
+
+        # list only active items
+        {:ok, view, _html} = live(conn, "/?filter_by=active")
+        refute render(view) =~ "Learn Elixir"
+        assert render(view) =~ "Learn Phoenix"
+
+        # list all items
+        {:ok, view, _html} = live(conn, "/?filter_by=all")
+        assert render(view) =~ "Learn Elixir"
+        assert render(view) =~ "Learn Phoenix"
+    end
 end

@@ -1,6 +1,7 @@
 defmodule TodoWeb.PageLive do
     use TodoWeb, :live_view
     alias Todo.Item
+    alias TodoWeb.Router.Helpers, as: Routes
 
     @topic "live"
 
@@ -62,6 +63,24 @@ defmodule TodoWeb.PageLive do
     @impl true
     def handle_info(%{event: "update", payload: %{items: items}}, socket) do
         {:noreply, assign(socket, items: items)}
+    end
+
+    @impl true
+    def handle_params(params, _url, socket) do
+        items = Item.list_items()
+
+        case params["filter_by"] do
+        "completed" ->
+            completed = Enum.filter(items, &(&1.status == 1))
+            {:noreply, assign(socket, items: completed, tab: "completed")}
+
+        "active" ->
+            active = Enum.filter(items, &(&1.status == 0))
+            {:noreply, assign(socket, items: active, tab: "active")}
+
+        _ ->
+            {:noreply, assign(socket, items: items, tab: "all")}
+        end
     end
 
     def checked?(%Item{} = item) do

@@ -18,6 +18,7 @@ defmodule TodoWeb.Router do
     pipe_through :browser
 
     live "/", PageLive
+    live "/:filter", PageLive
   end
 
   # Other scopes may use custom stacks.
