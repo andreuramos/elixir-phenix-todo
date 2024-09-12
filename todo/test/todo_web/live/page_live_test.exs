@@ -36,4 +36,25 @@ defmodule TodoWeb.PageLiveTest do
         updated_item = Item.get_item!(item.id)
         assert updated_item.status == 2
     end
+
+    test "edit item", %{conn: conn} do
+        {:ok, item} = Item.create_item(%{"text" => "Test edit item"})
+
+        {:ok, view, _html} = live(conn, "/")
+
+        assert render_click(view, "edit-item", %{"id" => Integer.to_string(item.id)}) =~
+             "<form phx-submit=\"update-item\" id=\"form-update\">"
+    end
+
+    test "update an item", %{conn: conn} do
+        {:ok, item} = Item.create_item(%{"text" => "Test update items text"})
+
+        {:ok, view, _html} = live(conn, "/")
+
+        assert render_submit(view, "update-item", %{"id" => item.id, "text" => "updated text"}) =~
+            "updated text"
+
+        updated_item = Item.get_item!(item.id)
+        assert updated_item.text == "updated text"
+    end
 end

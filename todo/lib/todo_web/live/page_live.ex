@@ -8,7 +8,7 @@ defmodule TodoWeb.PageLive do
     def mount(_params, _session, socket) do
 
         if connected?(socket), do: TodoWeb.Endpoint.subscribe(@topic)
-        {:ok, assign(socket, items: Item.list_items())}
+        {:ok, assign(socket, items: Item.list_items(), editing: nil)}
     end
 
     @impl true
@@ -37,6 +37,23 @@ defmodule TodoWeb.PageLive do
         Item.delete_item(Map.get(data, "id"))
 
         socket = assign(socket, items: Item.list_items(), active: %Item{})
+        TodoWeb.Endpoint.broadcast(@topic, "update", socket.assigns)
+
+        {:noreply, socket}
+    end
+
+    @impl true
+    def handle_event("edit-item", data, socket) do
+        {:noreply, assign(socket, editing: String.to_integer(data["id"]))}
+    end
+
+    @impl true
+    def handle_event("update-item", %{"id" => item_id, "text" => text}, socket) do
+        current_item = Item.get_item!(item_id)
+        Item.update_item(current_item, %{text: text})
+        items = Item.list_items()
+
+        socket = assign(socket, items: items, editing: nil)
         TodoWeb.Endpoint.broadcast(@topic, "update", socket.assigns)
 
         {:noreply, socket}
