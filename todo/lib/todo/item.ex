@@ -3,6 +3,7 @@ defmodule Todo.Item do
   alias Todo.Repo
   alias __MODULE__
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "items" do
     field :status, :integer, default: 0
@@ -30,7 +31,10 @@ defmodule Todo.Item do
   end
 
   def list_items do
-    Repo.all(Item)
+    Item
+    |> order_by(desc: :inserted_at)
+    |> where([a], is_nil(a.status) or a.status != 2)
+    |> Repo.all()
   end
 
   def update_item(%Item{} = item, attrs) do
@@ -43,5 +47,10 @@ defmodule Todo.Item do
     get_item!(id)
     |> Item.changeset(%{status: 2})
     |> Repo.update()  
+  end
+
+  def clear_completed() do
+    completed_items = from(i in Item, where: i.status == 1)
+    Repo.update_all(completed_items, set: [status: 2])
   end
 end

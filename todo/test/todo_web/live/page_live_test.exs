@@ -80,4 +80,20 @@ defmodule TodoWeb.PageLiveTest do
         assert render(view) =~ "Learn Elixir"
         assert render(view) =~ "Learn Phoenix"
     end
+
+    test "clear completed items", %{conn: conn} do
+        {:ok, item1} = Item.create_item(%{"text" => "Learn Elixir"})
+        {:ok, _item2} = Item.create_item(%{"text" => "Learn Phoenix"})
+
+        # complete item1
+        {:ok, view, _html} = live(conn, "/")
+        assert render(view) =~ "Learn Elixir"
+        assert render(view) =~ "Learn Phoenix"
+
+        assert render_click(view, :toggle, %{"id" => item1.id, "value" => 1})
+
+        view = render_click(view, "clear-completed", %{})
+        assert view =~ "Learn Phoenix"
+        refute view =~ "Learn Elixir"
+    end
 end

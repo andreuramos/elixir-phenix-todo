@@ -59,7 +59,7 @@
             <li><.link patch={Routes.live_path(@socket, TodoWeb.PageLive, %{filter_by: "active"})}>Active</.link></li>
             <li><.link patch={Routes.live_path(@socket, TodoWeb.PageLive, %{filter_by: "completed"})}>Completed</.link></li>
         </ul>
-        <button class="clear-completed" style="display: block;">
+        <button class="clear-completed" style="display: block;" phx-click="clear-completed">
             Clear Completed
         </button>
     </footer>
